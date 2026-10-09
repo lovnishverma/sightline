@@ -1,0 +1,442 @@
+{
+  "table2_summary": {
+    "Scenario A (Static + Noise)": {
+      "Ungated": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Exact-Hash": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "dHash Threshold": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Proposed Default": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Proposed OCR": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      }
+    },
+    "Scenario B (Ambulatory Drift)": {
+      "Ungated": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Exact-Hash": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "dHash Threshold": {
+        "inv_mean": 160.0,
+        "inv_std": 0.0,
+        "supp_mean": 19.999999999999996,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Proposed Default": {
+        "inv_mean": 71.0,
+        "inv_std": 0.0,
+        "supp_mean": 64.5,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Proposed OCR": {
+        "inv_mean": 123.0,
+        "inv_std": 0.0,
+        "supp_mean": 38.5,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      }
+    },
+    "Scenario C (Hazard Onset & Tracking)": {
+      "Ungated": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Exact-Hash": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "dHash Threshold": {
+        "inv_mean": 16.0,
+        "inv_std": 0.4472135954999579,
+        "supp_mean": 92.0,
+        "supp_std": 0.22360679774997896,
+        "recall_mean": 75.0
+      },
+      "Proposed Default": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 50.0
+      },
+      "Proposed OCR": {
+        "inv_mean": 18.5,
+        "inv_std": 5.389805191284746,
+        "supp_mean": 90.75,
+        "supp_std": 2.694902595642373,
+        "recall_mean": 50.0
+      }
+    },
+    "Scenario D (Text-Dense Inspection)": {
+      "Ungated": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Exact-Hash": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "dHash Threshold": {
+        "inv_mean": 186.1,
+        "inv_std": 4.346262762420146,
+        "supp_mean": 6.949999999999998,
+        "supp_std": 2.1731313812100703,
+        "recall_mean": 100.0
+      },
+      "Proposed Default": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 2.0
+      },
+      "Proposed OCR": {
+        "inv_mean": 32.9,
+        "inv_std": 3.8587562763149474,
+        "supp_mean": 83.55,
+        "supp_std": 1.9293781381574737,
+        "recall_mean": 60.2
+      }
+    },
+    "Scenario E (Dynamic Illumination)": {
+      "Ungated": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "Exact-Hash": {
+        "inv_mean": 200.0,
+        "inv_std": 0.0,
+        "supp_mean": 0.0,
+        "supp_std": 0.0,
+        "recall_mean": 100.0
+      },
+      "dHash Threshold": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 50.0
+      },
+      "Proposed Default": {
+        "inv_mean": 1.0,
+        "inv_std": 0.0,
+        "supp_mean": 99.5,
+        "supp_std": 0.0,
+        "recall_mean": 50.0
+      },
+      "Proposed OCR": {
+        "inv_mean": 6.9,
+        "inv_std": 0.3,
+        "supp_mean": 96.55,
+        "supp_std": 0.15000000000000002,
+        "recall_mean": 100.0
+      }
+    }
+  },
+  "ablation_results": {
+    "1. Visual only (alpha=1.0)": {
+      "inv_mean": 16.0,
+      "inv_std": 0.4472135954999579,
+      "supp_mean": 92.0,
+      "recall_mean": 75.0,
+      "delay_mean": 1.05
+    },
+    "2. Semantic proxy only (beta=1.0)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "3. Motion only (gamma=1.0)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "4. Hazard only (delta=1.0)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "5. Visual + Motion (alpha=0.5, gamma=0.5)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "6. Visual + Semantic (alpha=0.5, beta=0.5)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "7. Visual + Motion + Hazard": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "8. Full Gate (Default Ambient Profile)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 50.0,
+      "delay_mean": 0.0
+    },
+    "9. Full Gate on Scenario D (Default Profile)": {
+      "inv_mean": 1.0,
+      "inv_std": 0.0,
+      "supp_mean": 99.5,
+      "recall_mean": 2.0,
+      "delay_mean": 0.0
+    },
+    "10. Full Gate on Scenario D (Task-Conditioned OCR Profile)": {
+      "inv_mean": 32.9,
+      "inv_std": 3.8587562763149474,
+      "supp_mean": 83.55,
+      "recall_mean": 60.2,
+      "delay_mean": 1.6077496781656375
+    }
+  },
+  "sweep_results": {
+    "taus": [
+      0.05,
+      0.08,
+      0.1,
+      0.12,
+      0.14,
+      0.16,
+      0.18,
+      0.2,
+      0.22,
+      0.25,
+      0.3,
+      0.35,
+      0.4
+    ],
+    "Scenario A": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "Scenario C": [
+      [
+        68.6,
+        0.4898979485566356
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "Scenario D": [
+      [
+        174.2,
+        5.912698199637792
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ]
+  },
+  "latency_gate_ms": 1.7863090000173543,
+  "latency_exact_ms": 0.20420049993845169
+}

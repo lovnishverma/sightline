@@ -3,6 +3,7 @@ from src.conversation.context import CONTEXT
 from src.speech.tts import text_to_speech
 from src.speech.audio_manager import AudioQueue
 from src.vision.scene_change import compute_hash, hash_distance
+from src.vision.priority_gate import PrioritySceneGate
 from src.config import CONFIG
 from PIL import Image
 
@@ -14,6 +15,11 @@ class SightLineAssistant:
     def __init__(self):
         self.vision = FlorenceVisionEngine()
         self.audio_finish_time = 0.0
+        # Initialize multi-factor PrioritySceneGate with 30-frame watchdog heartbeat
+        self.gate = PrioritySceneGate(
+            alpha=0.25, beta=0.20, gamma=0.30, delta=0.25,
+            threshold=0.18, heartbeat_interval=30
+        )
         
     def initialize(self):
         self.vision.load()
@@ -43,10 +49,13 @@ class SightLineAssistant:
         }
         internal_task = task_map.get(task, "<DETAILED_CAPTION>")
         
-        # Debounce/Duplicate check if not forced
-        if not force and CONTEXT.is_duplicate(img_hash, internal_task) and internal_task != "<VQA>":
+        # Multi-factor PrioritySceneGate evaluation
+        should_invoke, change_score, breakdown = self.gate.evaluate_change(image)
+        
+        # Debounce/Gating check if not forced
+        if not force and not should_invoke and internal_task != "<VQA>" and CONTEXT.last_text != "":
             text, audio = CONTEXT.get_last()
-            return text, audio, "Used cached result"
+            return text, audio, f"Gate suppressed (change: {change_score:.3f})"
             
         # Inference based on task
         if internal_task == "<OCR>":
