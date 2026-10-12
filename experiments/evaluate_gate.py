@@ -94,7 +94,7 @@ def generate_scenarios(seed=42):
         img = np.full((120, 160, 3), 245, dtype=np.uint8)
         block_idx = (i // 4) % 5
         for b in range(5):
-            val = 20 if b == block_idx and (i % 4 != 0) else 90
+            val = 20 if b == block_idx else 90
             img[15 + b*20 : 25 + b*20, 20:140] = val
         frames_d.append(
             Image.fromarray(np.clip(img.astype(np.float32) + np.random.normal(0, 3.5, img.shape), 0, 255).astype(np.uint8))
