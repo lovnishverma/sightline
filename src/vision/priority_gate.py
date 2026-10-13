@@ -110,7 +110,7 @@ class PrioritySceneGate:
         # 4. Hazard state with latch cooldown
         self.frames_since_hazard_alert += 1
         if self.cooldown_interval > 0 and self.cached_hazard > 0:
-            s_haz = 0.0 if self.frames_since_hazard_alert < self.cooldown_interval else float(self.cached_hazard)
+            s_haz = 0.0 if (self.frames_since_hazard_alert < self.cooldown_interval and s_mot < self.threshold) else float(self.cached_hazard)
         else:
             s_haz = float(self.cached_hazard)
 
@@ -138,8 +138,7 @@ class PrioritySceneGate:
             if detection_labels is not None:
                 has_haz = any(l.lower() in self.hazard_vocabulary for l in detection_labels)
                 if has_haz:
-                    if self.cached_hazard == 0.0 or self.frames_since_hazard_alert >= self.cooldown_interval:
-                        self.frames_since_hazard_alert = 0
+                    self.frames_since_hazard_alert = 0
                     self.cached_hazard = 1.0
                 else:
                     self.cached_hazard = 0.0
