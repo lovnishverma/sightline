@@ -8,7 +8,8 @@ class PrioritySceneGate:
     
     Causally couples perceptual difference hashing, color histogram dissimilarity,
     grayscale thumbnail motion proxy, and causally persisted hazard state with
-    configurable watchdog heartbeat (T_max) and hazard latch cooldown (T_cool).
+    configurable watchdog heartbeat (T_max), hazard latch cooldown (T_cool),
+    and adaptive two-tier ambient/active rate switching.
     """
     def __init__(
         self,
@@ -19,7 +20,14 @@ class PrioritySceneGate:
         threshold: float = 0.18,
         heartbeat_interval: Optional[int] = 15,
         cooldown_interval: int = 6,
-        hazard_vocabulary: Optional[set] = None
+        hazard_vocabulary: Optional[set] = None,
+        eps: float = 0.0,
+        theta_override: float = 0.02,
+        theta_active: float = 0.02,
+        t_ambient: Optional[int] = 60,
+        t_active: int = 6,
+        adaptive_watchdog: bool = False,
+        quiescent_mode: bool = False,
     ):
         tot = alpha + beta + gamma + delta
         self.alpha = alpha / tot
@@ -29,6 +37,13 @@ class PrioritySceneGate:
         self.threshold = threshold
         self.heartbeat_interval = heartbeat_interval
         self.cooldown_interval = cooldown_interval
+        self.eps = eps
+        self.theta_override = theta_override
+        self.theta_active = theta_active
+        self.t_ambient = t_ambient
+        self.t_active = t_active
+        self.adaptive_watchdog = adaptive_watchdog
+        self.quiescent_mode = quiescent_mode
         
         self.hazard_vocabulary = hazard_vocabulary or {
             'car', 'vehicle', 'truck', 'bus', 'stairs', 'curb', 'hole', 'obstacle'
@@ -44,17 +59,21 @@ class PrioritySceneGate:
         self.frames_since_invocation: int = 0
         self.frames_since_hazard_alert: float = float('inf')
 
-    def compute_dhash(self, img: Image.Image, size: int = 16) -> np.ndarray:
-        """Compute difference hash (dHash) using Lanczos downsampling."""
+    def compute_dhash(self, img: Image.Image, size: int = 16, eps: Optional[float] = None) -> np.ndarray:
+        """Compute difference hash (dHash) using Lanczos downsampling and dead-zone."""
+        e = self.eps if eps is None else eps
         gray = img.resize((size + 1, size), Image.Resampling.LANCZOS).convert('L')
         pixels = np.array(gray, dtype=np.float32)
-        diff = pixels[:, :-1] > pixels[:, 1:]
-        return diff.flatten()
+        diff = pixels[:, :-1] - pixels[:, 1:]
+        if e <= 0.0:
+            return (diff > 0.0).flatten()
+        else:
+            return (diff > e).flatten()
 
     def compute_appearance_proxy(self, img: Image.Image) -> np.ndarray:
         """
         Compute 48-bin concatenated RGB color histogram (L2-normalized)
-        as an appearance-based semantic proxy for standalone validation.
+        as an appearance-based semantic proxy.
         """
         arr = np.array(img.convert('RGB'))
         r_hist, _ = np.histogram(arr[:, :, 0], bins=16, range=(0, 256), density=True)
@@ -70,7 +89,7 @@ class PrioritySceneGate:
         detection_labels: Optional[List[str]] = None
     ) -> Tuple[bool, float, Dict[str, float]]:
         """
-        Evaluate whether the incoming frame warrants expensive VLM invocation.
+        Evaluate whether incoming frame warrants expensive VLM invocation.
         Returns (should_invoke, change_score, feature_breakdown).
         """
         cur_hash = self.compute_dhash(img)
@@ -104,13 +123,22 @@ class PrioritySceneGate:
         cos_sim = float(np.dot(cur_emb, self.prev_emb))
         s_app = float(np.clip(1.0 - cos_sim, 0.0, 1.0))
         
-        # 3. Motion Magnitude Proxy (Normalized MAD on 32x32 thumbnail)
+        # 3. Motion Magnitude Proxy (Normalized MAD against Reference Frame)
         s_mot = float(np.mean(np.abs(cur_gray - self.prev_gray)) / 255.0)
         
-        # 4. Hazard state with latch cooldown
+        # 4. Adaptive Watchdog interval selection
+        if self.adaptive_watchdog:
+            if self.quiescent_mode:
+                # Pedometer-gated: 0 probes during rest unless motion detected
+                self.heartbeat_interval = self.t_active if (s_mot >= self.theta_active or self.cached_hazard > 0) else None
+            else:
+                # Paced ambient: switches between T_ambient and T_active
+                self.heartbeat_interval = self.t_active if (s_mot >= self.theta_active or self.cached_hazard > 0) else self.t_ambient
+
+        # 5. Hazard state with latch cooldown and motion override
         self.frames_since_hazard_alert += 1
         if self.cooldown_interval > 0 and self.cached_hazard > 0:
-            s_haz = 0.0 if (self.frames_since_hazard_alert < self.cooldown_interval and s_mot < self.threshold) else float(self.cached_hazard)
+            s_haz = 0.0 if (self.frames_since_hazard_alert < self.cooldown_interval and s_mot < self.theta_override) else float(self.cached_hazard)
         else:
             s_haz = float(self.cached_hazard)
 
@@ -138,7 +166,7 @@ class PrioritySceneGate:
             if detection_labels is not None:
                 has_haz = any(l.lower() in self.hazard_vocabulary for l in detection_labels)
                 if has_haz:
-                    self.frames_since_hazard_alert = 0
+                    self.frames_since_hazard_alert = 0  # Unconditional reset on hazard detection
                     self.cached_hazard = 1.0
                 else:
                     self.cached_hazard = 0.0
