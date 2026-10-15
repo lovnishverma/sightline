@@ -15,10 +15,15 @@ class SightLineAssistant:
     def __init__(self):
         self.vision = FlorenceVisionEngine()
         self.audio_finish_time = 0.0
-        # Initialize multi-factor PrioritySceneGate with 30-frame watchdog heartbeat
+        # Initialize multi-factor PrioritySceneGate with adaptive two-tier watchdog & ROI hazard awareness
         self.gate = PrioritySceneGate(
             alpha=0.25, beta=0.20, gamma=0.30, delta=0.25,
-            threshold=0.18, heartbeat_interval=30
+            threshold=0.18, heartbeat_interval=60,
+            cooldown_interval=6,
+            adaptive_watchdog=True,
+            t_ambient=60, t_active=6,
+            use_2d_hash=True,
+            use_roi_motion=True
         )
         
     def initialize(self):
@@ -101,11 +106,22 @@ class SightLineAssistant:
                 duration = len(response) / 15.0  # Fallback rough estimate
             self.audio_finish_time = time.time() + duration
 
+        # Extract detected words/entities to update causal hazard state
+        import re
+        words = re.findall(r'\b[a-zA-Z]+\b', response.lower())
+        self.gate.update_hazard_state(words)
+        has_hazard = any(w in self.gate.hazard_vocabulary for w in words)
+
         # Update context
         CONTEXT.update(img_hash, task, response, audio_path)
         
-        # Enqueue audio
+        # Enqueue audio with priority scoring and preemption (Eq. 11)
         if audio_path:
-            AUDIO_QUEUE.enqueue(response, audio_path)
+            p_score = AUDIO_QUEUE.calculate_priority(
+                is_hazard=has_hazard,
+                proximity_score=0.90 if has_hazard else 0.40,
+                urgency_score=0.95 if has_hazard else 0.30
+            )
+            AUDIO_QUEUE.enqueue(response, audio_path, priority=p_score, is_urgent=has_hazard)
             
         return response, audio_path, f"Processed task: {task}"
