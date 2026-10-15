@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-10-15T13:09:34Z",
+  "hardware": "NVIDIA GeForce RTX 2050 (4GB VRAM) / Jetson Orin Nano Calibrated Model",
+  "video": "video.mov",
+  "video_fps": 30.0,
+  "video_duration_s": 20.0,
+  "evaluated_frames": 600,
+  "vlm_model": "microsoft/Florence-2-base (FP16)",
+  "t_vlm_mean_ms": 380.0,
+  "p_idle_watts": 1.85,
+  "p_active_watts": 11.5,
+  "usable_battery_wh": 32.56,
+  "nominal_battery_wh": 37.0
+}

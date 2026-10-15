@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use SightLine in your research, please cite it as below."
+title: "SightLine: Priority-Weighted Scene-Change Gating for Redundancy-Aware Assistive Vision-Language Models"
+authors:
+  - family-names: "Verma"
+    given-names: "Lovnish"
+date-released: 2026-10-15
+repository-code: "https://github.com/lovnishverma/sightline"
+license: "MIT"
+keywords:
+  - assistive-technology
+  - edge-ai
+  - vision-language-models
+  - scene-change-gating
+  - perceptual-hashing
+  - low-power-inference

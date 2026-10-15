@@ -168,7 +168,10 @@ class PrioritySceneGate:
         
         # 2. Appearance Proxy Dissimilarity (Cosine)
         cos_sim = float(np.dot(cur_emb, self.prev_emb))
-        s_app = float(np.clip(1.0 - cos_sim, 0.0, 1.0))
+        if cos_sim >= 0.99999 or np.array_equal(cur_emb, self.prev_emb):
+            s_app = 0.0
+        else:
+            s_app = float(np.clip(1.0 - cos_sim, 0.0, 1.0))
         
         # 3. Motion Magnitude Proxy (Global MAD + optional ROI Block Max)
         s_mot_global, s_roi_max, cv_spatial = self.compute_motion_proxy(cur_gray, self.prev_gray)
@@ -203,6 +206,8 @@ class PrioritySceneGate:
             self.gamma * s_mot +
             self.delta * s_haz
         )
+        if change_score < 1e-5:
+            change_score = 0.0
         
         self.frames_since_invocation += 1
         heartbeat_forced = bool(
@@ -239,8 +244,11 @@ class PrioritySceneGate:
         }
         return should_invoke, change_score, breakdown
 
-    def update_hazard_state(self, detection_labels: List[str]):
+    def update_hazard_state(self, detection_labels: Optional[List[str]]):
         """Update causally persisted hazard state following VLM execution."""
+        if detection_labels is None:
+            # Fallback if downstream call failed or timed out: retain safe state
+            return
         has_haz = any(l.lower() in self.hazard_vocabulary for l in detection_labels)
         if has_haz:
             self.frames_since_hazard_alert = 0

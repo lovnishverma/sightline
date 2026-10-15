@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary Office and lock files
+~$*.docx
+~$*.pptx
+~$*.xlsx
+*.tmp
+test_omml.docx
+src/vision/priority_gate_backup.py
+
+# Raw heavy video files (if any in repo)
+*.mov
+*.mp4
+*.avi
+!assets/

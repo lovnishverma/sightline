@@ -112,6 +112,7 @@ class AudioQueue:
         evicted = self._priority_heap.pop(worst_idx)
         heapq.heapify(self._priority_heap)
         self._safe_delete(evicted[3])
+        self._queue = deque([(t, a) for _, _, t, a, _, _ in sorted(self._priority_heap)])
 
     def clear(self):
         """Clear all queued audio and delete temporary files."""
@@ -131,12 +132,12 @@ class AudioQueue:
     @property
     def is_empty(self) -> bool:
         with self._lock:
-            return len(self._priority_heap) == 0 and len(self._queue) == 0
+            return len(self._priority_heap) == 0
 
     @property
     def size(self) -> int:
         with self._lock:
-            return max(len(self._priority_heap), len(self._queue))
+            return len(self._priority_heap)
 
     @staticmethod
     def _safe_delete(path: str):

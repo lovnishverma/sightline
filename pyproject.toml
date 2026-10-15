@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sightline"
+version = "2.0.0"
+description = "Priority-Weighted Scene-Change Gating for Redundancy-Aware Assistive Vision-Language Models"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Lovnish Verma" }
+]
+keywords = [
+    "assistive-ai",
+    "edge-computing",
+    "vision-language-models",
+    "scene-change-detection",
+    "perceptual-hashing",
+    "jetson"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Human-Machine Interfaces",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "Pillow>=9.5.0",
+    "opencv-python-headless>=4.7.0",
+    "torch>=2.0.0",
+    "transformers>=4.38.0",
+    "scipy>=1.10.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.3.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.3.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
