@@ -55,8 +55,8 @@ class PrioritySceneGate:
         self.theta_roi = theta_roi
         
         self.hazard_vocabulary = hazard_vocabulary or {
-            'car', 'vehicle', 'truck', 'bus', 'stairs', 'curb', 'hole', 'obstacle',
-            'person', 'bicycle', 'motorcycle', 'pole'
+            'car', 'vehicle', 'truck', 'bus', 'bicycle', 'motorcycle', 'scooter',
+            'pedestrian', 'person', 'stairs', 'curb', 'hole', 'obstacle', 'pole'
         }
         
         # Reference representations (most recently invoked frame)
