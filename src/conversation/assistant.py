@@ -2,6 +2,7 @@ from src.vision.florence import FlorenceVisionEngine
 from src.conversation.context import CONTEXT
 from src.speech.tts import text_to_speech
 from src.speech.audio_manager import AudioQueue
+from src.speech.translation import translate_to_hindi
 from src.vision.scene_change import compute_hash, hash_distance
 from src.vision.priority_gate import PrioritySceneGate
 from src.config import CONFIG
@@ -74,27 +75,23 @@ class SightLineAssistant:
             response = self.vision.describe_scene(image, detailed=True)
         else:
             response = self.vision.describe_scene(image, detailed=False)
+
+        original_response = response
+
+        # Extract detected words/entities to update causal hazard state before translation
+        import re
+        words = re.findall(r'\b[a-zA-Z]+\b', original_response.lower())
+        self.gate.update_hazard_state(words)
+        has_hazard = any(w in self.gate.hazard_vocabulary for w in words)
+
         # Hyper-Local Translation for Hindi voices
         if "Hindi" in voice_name:
-            try:
-                from deep_translator import GoogleTranslator, MyMemoryTranslator
-                translated = GoogleTranslator(source='auto', target='hi').translate(response)
-                
-                if not translated or "Error 500" in translated or "Server Error" in translated:
-                    # Fallback to MyMemory API if Google blocks the scraper
-                    translated = MyMemoryTranslator(source='en-US', target='hi-IN').translate(response)
+            translated = translate_to_hindi(original_response)
+            if translated and translated.strip():
+                response = translated
 
-                if translated and "Error 500" not in translated:
-                    response = translated
-                else:
-                    print("Translation API failed or rate-limited. Falling back to English.")
-                    voice_name = "English (US) - Aria"
-            except Exception as e:
-                print(f"Translation error: {e}. Falling back to English.")
-                voice_name = "English (US) - Aria"
-
-        # TTS
-        audio_path = text_to_speech(response, voice_name)
+        # TTS (with fallback English text for offline SAPI)
+        audio_path = text_to_speech(response, voice_name, fallback_text=original_response)
         
         if audio_path:
             import time
@@ -102,15 +99,8 @@ class SightLineAssistant:
                 from pydub import AudioSegment
                 duration = AudioSegment.from_file(audio_path).duration_seconds
             except Exception as e:
-                print(f"Duration error: {e}")
                 duration = len(response) / 15.0  # Fallback rough estimate
             self.audio_finish_time = time.time() + duration
-
-        # Extract detected words/entities to update causal hazard state
-        import re
-        words = re.findall(r'\b[a-zA-Z]+\b', response.lower())
-        self.gate.update_hazard_state(words)
-        has_hazard = any(w in self.gate.hazard_vocabulary for w in words)
 
         # Update context
         CONTEXT.update(img_hash, task, response, audio_path)

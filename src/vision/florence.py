@@ -37,7 +37,7 @@ class FlorenceVisionEngine(VisionEngine):
         self.paddle_ocr = None
 
     def load(self):
-        """Load the Florence-2 model."""
+        """Load the Florence-2 model with automatic offline cache fallback."""
         if self.model is not None:
             return
             
@@ -53,12 +53,22 @@ class FlorenceVisionEngine(VisionEngine):
             import transformers.modeling_utils
             transformers.modeling_utils.PreTrainedModel._supports_sdpa = False
                 
-            self.model = AutoModelForCausalLM.from_pretrained(
-                CONFIG.MODEL_NAME,
-                trust_remote_code=True,
-                torch_dtype=DTYPE,
-                attn_implementation="eager"
-            ).eval()
+            try:
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    CONFIG.MODEL_NAME,
+                    trust_remote_code=True,
+                    torch_dtype=DTYPE,
+                    attn_implementation="eager"
+                ).eval()
+            except Exception as e:
+                print(f"Online model fetch failed or offline ({e}). Attempting local_files_only=True...")
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    CONFIG.MODEL_NAME,
+                    trust_remote_code=True,
+                    torch_dtype=DTYPE,
+                    attn_implementation="eager",
+                    local_files_only=True
+                ).eval()
 
             # Hotfix for Florence-2 processor tokenizer compatibility
             if not hasattr(transformers.PreTrainedTokenizerBase, "additional_special_tokens"):
@@ -66,10 +76,18 @@ class FlorenceVisionEngine(VisionEngine):
                     lambda self: getattr(self, "_additional_special_tokens", [])
                 )
 
-            self.processor = AutoProcessor.from_pretrained(
-                CONFIG.MODEL_NAME,
-                trust_remote_code=True,
-            )
+            try:
+                self.processor = AutoProcessor.from_pretrained(
+                    CONFIG.MODEL_NAME,
+                    trust_remote_code=True,
+                )
+            except Exception as e:
+                print(f"Online processor fetch failed or offline ({e}). Attempting local_files_only=True...")
+                self.processor = AutoProcessor.from_pretrained(
+                    CONFIG.MODEL_NAME,
+                    trust_remote_code=True,
+                    local_files_only=True
+                )
             print("Florence-2 loaded successfully")
             
             try:
@@ -78,7 +96,7 @@ class FlorenceVisionEngine(VisionEngine):
                 self.paddle_ocr = PaddleOCR(use_angle_cls=True, lang='en', show_log=False)
                 print("PaddleOCR loaded successfully")
             except Exception as e:
-                print(f"PaddleOCR load failed: {e}")
+                print(f"PaddleOCR load failed (optional OCR will use Florence-2): {e}")
                 
             self._warmup()
         except Exception as e:

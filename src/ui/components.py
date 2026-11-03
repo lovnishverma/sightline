@@ -29,18 +29,33 @@ def build_ui(assistant) -> gr.Blocks:
         }, 1000); // Check every second indefinitely
     }
     """
-    with gr.Blocks(title=f"{CONFIG.APP_NAME} v{CONFIG.APP_VERSION}", js=auto_start_js, css=CSS) as demo:
+    with gr.Blocks(title=f"{CONFIG.APP_NAME} | INNOpreneur 2026 @IIT Ropar and Jugaad mela 5.0", js=auto_start_js, css=CSS) as demo:
         gr.HTML('<div class="sr-only" aria-live="assertive" id="aria-live-region" role="status"></div>')
         
         status_bar = gr.HTML(_status_html("Ready — Press D to describe"))
 
         gr.HTML(f"""
-        <div class="sightline-header" style="display: flex; align-items: center; gap: 12px; margin: 10px 0 18px 0;">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent, #2563eb);">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <h1 style="margin: 0; font-size: 2rem; font-weight: 800; display: inline-block;">{CONFIG.APP_NAME}</h1>
+        <div class="sightline-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin: 10px 0 20px 0; padding: 14px 20px; background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%); border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.04);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent, #2563eb);">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <div>
+                    <h1 style="margin: 0; font-size: 2.1rem; font-weight: 800; display: inline-block; color: #0f172a;">{CONFIG.APP_NAME}</h1>
+                    <div style="font-size: 1.15rem; font-weight: 700; color: #1e40af; margin-top: 3px;">
+                        INNOpreneur 2026 @IIT Ropar and Jugaad mela 5.0
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <span style="background: #1e40af; color: #ffffff; padding: 6px 14px; border-radius: 9999px; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
+                    INNOpreneur 2026 @IIT Ropar
+                </span>
+                <span style="background: #ea580c; color: #ffffff; padding: 6px 14px; border-radius: 9999px; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.3px; box-shadow: 0 1px 3px rgba(0,0,0,0.12);">
+                    Jugaad mela 5.0
+                </span>
+            </div>
         </div>
         """)
         
@@ -65,7 +80,7 @@ def build_ui(assistant) -> gr.Blocks:
                     stop_btn = gr.Button("Stop (Esc)", elem_id="btn-stop")
                 
                 voice_dropdown = gr.Dropdown(
-                    choices=["English (US) - Aria", "Hindi - Swara"],
+                    choices=["English (US) - Aria", "English (US) - Guy", "English (UK) - Sonia", "Hindi - Swara", "Hindi - Madhur"],
                     value="English (US) - Aria",
                     label="Voice"
                 )
